@@ -29,25 +29,25 @@
         private void InitializeComponent()
         {
             this.optionsGroupBox = new System.Windows.Forms.GroupBox();
+            this.operationGroupBox = new System.Windows.Forms.GroupBox();
+            this.selectOperationButton = new System.Windows.Forms.Button();
+            this.operationsComboBox = new System.Windows.Forms.ComboBox();
             this.selectFileGroupBox = new System.Windows.Forms.GroupBox();
+            this.readFileButton = new System.Windows.Forms.Button();
             this.selectFileButton = new System.Windows.Forms.Button();
             this.selectedFileLink = new System.Windows.Forms.TextBox();
             this.selectFileLabel = new System.Windows.Forms.Label();
             this.fileDialog = new System.Windows.Forms.OpenFileDialog();
-            this.readFileButton = new System.Windows.Forms.Button();
-            this.operationGroupBox = new System.Windows.Forms.GroupBox();
-            this.operationsComboBox = new System.Windows.Forms.ComboBox();
-            this.selectOperationButton = new System.Windows.Forms.Button();
             this.dataTableGroupBox = new System.Windows.Forms.GroupBox();
-            this.dataTableVisualisation = new System.Windows.Forms.DataGridView();
             this.statusGroupBox = new System.Windows.Forms.GroupBox();
             this.statusLabel = new System.Windows.Forms.Label();
+            this.dataTableVisualisation = new System.Windows.Forms.DataGridView();
             this.optionsGroupBox.SuspendLayout();
-            this.selectFileGroupBox.SuspendLayout();
             this.operationGroupBox.SuspendLayout();
+            this.selectFileGroupBox.SuspendLayout();
             this.dataTableGroupBox.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataTableVisualisation)).BeginInit();
             this.statusGroupBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataTableVisualisation)).BeginInit();
             this.SuspendLayout();
             // 
             // optionsGroupBox
@@ -61,6 +61,38 @@
             this.optionsGroupBox.TabStop = false;
             this.optionsGroupBox.Text = "Opcje";
             // 
+            // operationGroupBox
+            // 
+            this.operationGroupBox.Controls.Add(this.selectOperationButton);
+            this.operationGroupBox.Controls.Add(this.operationsComboBox);
+            this.operationGroupBox.Enabled = false;
+            this.operationGroupBox.Location = new System.Drawing.Point(6, 202);
+            this.operationGroupBox.Name = "operationGroupBox";
+            this.operationGroupBox.Size = new System.Drawing.Size(271, 145);
+            this.operationGroupBox.TabIndex = 1;
+            this.operationGroupBox.TabStop = false;
+            this.operationGroupBox.Text = "Wybór operacji";
+            // 
+            // selectOperationButton
+            // 
+            this.selectOperationButton.Enabled = false;
+            this.selectOperationButton.Location = new System.Drawing.Point(24, 69);
+            this.selectOperationButton.Name = "selectOperationButton";
+            this.selectOperationButton.Size = new System.Drawing.Size(227, 50);
+            this.selectOperationButton.TabIndex = 4;
+            this.selectOperationButton.Text = "Wybierz operację";
+            this.selectOperationButton.UseVisualStyleBackColor = true;
+            this.selectOperationButton.Click += new System.EventHandler(this.selectOperationButton_Click);
+            // 
+            // operationsComboBox
+            // 
+            this.operationsComboBox.FormattingEnabled = true;
+            this.operationsComboBox.Location = new System.Drawing.Point(24, 31);
+            this.operationsComboBox.Name = "operationsComboBox";
+            this.operationsComboBox.Size = new System.Drawing.Size(227, 21);
+            this.operationsComboBox.TabIndex = 0;
+            this.operationsComboBox.SelectedIndexChanged += new System.EventHandler(this.operationsComboBox_SelectedIndexChanged);
+            // 
             // selectFileGroupBox
             // 
             this.selectFileGroupBox.Controls.Add(this.readFileButton);
@@ -73,6 +105,17 @@
             this.selectFileGroupBox.TabIndex = 0;
             this.selectFileGroupBox.TabStop = false;
             this.selectFileGroupBox.Text = "Wybór pliku";
+            // 
+            // readFileButton
+            // 
+            this.readFileButton.Enabled = false;
+            this.readFileButton.Location = new System.Drawing.Point(146, 86);
+            this.readFileButton.Name = "readFileButton";
+            this.readFileButton.Size = new System.Drawing.Size(105, 49);
+            this.readFileButton.TabIndex = 3;
+            this.readFileButton.Text = "Wczytaj Plik";
+            this.readFileButton.UseVisualStyleBackColor = true;
+            this.readFileButton.Click += new System.EventHandler(this.readFileButton_Click);
             // 
             // selectFileButton
             // 
@@ -105,47 +148,6 @@
             this.fileDialog.FileName = "fileToOperation";
             this.fileDialog.FileOk += new System.ComponentModel.CancelEventHandler(this.fileDialog_FileOk);
             // 
-            // readFileButton
-            // 
-            this.readFileButton.Enabled = false;
-            this.readFileButton.Location = new System.Drawing.Point(146, 86);
-            this.readFileButton.Name = "readFileButton";
-            this.readFileButton.Size = new System.Drawing.Size(105, 49);
-            this.readFileButton.TabIndex = 3;
-            this.readFileButton.Text = "Wczytaj Plik";
-            this.readFileButton.UseVisualStyleBackColor = true;
-            this.readFileButton.Click += new System.EventHandler(this.readFileButton_Click);
-            // 
-            // operationGroupBox
-            // 
-            this.operationGroupBox.Controls.Add(this.selectOperationButton);
-            this.operationGroupBox.Controls.Add(this.operationsComboBox);
-            this.operationGroupBox.Enabled = false;
-            this.operationGroupBox.Location = new System.Drawing.Point(6, 202);
-            this.operationGroupBox.Name = "operationGroupBox";
-            this.operationGroupBox.Size = new System.Drawing.Size(271, 145);
-            this.operationGroupBox.TabIndex = 1;
-            this.operationGroupBox.TabStop = false;
-            this.operationGroupBox.Text = "Wybór operacji";
-            // 
-            // operationsComboBox
-            // 
-            this.operationsComboBox.FormattingEnabled = true;
-            this.operationsComboBox.Location = new System.Drawing.Point(24, 31);
-            this.operationsComboBox.Name = "operationsComboBox";
-            this.operationsComboBox.Size = new System.Drawing.Size(227, 21);
-            this.operationsComboBox.TabIndex = 0;
-            // 
-            // selectOperationButton
-            // 
-            this.selectOperationButton.Enabled = false;
-            this.selectOperationButton.Location = new System.Drawing.Point(24, 69);
-            this.selectOperationButton.Name = "selectOperationButton";
-            this.selectOperationButton.Size = new System.Drawing.Size(227, 50);
-            this.selectOperationButton.TabIndex = 4;
-            this.selectOperationButton.Text = "Wybierz operację";
-            this.selectOperationButton.UseVisualStyleBackColor = true;
-            // 
             // dataTableGroupBox
             // 
             this.dataTableGroupBox.Controls.Add(this.statusGroupBox);
@@ -157,14 +159,6 @@
             this.dataTableGroupBox.TabIndex = 1;
             this.dataTableGroupBox.TabStop = false;
             this.dataTableGroupBox.Text = "Tablica z zawartością";
-            // 
-            // dataTableVisualisation
-            // 
-            this.dataTableVisualisation.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataTableVisualisation.Location = new System.Drawing.Point(20, 106);
-            this.dataTableVisualisation.Name = "dataTableVisualisation";
-            this.dataTableVisualisation.Size = new System.Drawing.Size(374, 240);
-            this.dataTableVisualisation.TabIndex = 0;
             // 
             // statusGroupBox
             // 
@@ -185,6 +179,14 @@
             this.statusLabel.TabIndex = 0;
             this.statusLabel.Text = "brak";
             // 
+            // dataTableVisualisation
+            // 
+            this.dataTableVisualisation.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataTableVisualisation.Location = new System.Drawing.Point(20, 106);
+            this.dataTableVisualisation.Name = "dataTableVisualisation";
+            this.dataTableVisualisation.Size = new System.Drawing.Size(374, 240);
+            this.dataTableVisualisation.TabIndex = 0;
+            // 
             // EncryptDES
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -195,13 +197,13 @@
             this.Name = "EncryptDES";
             this.Text = "Szyfrowanie DES";
             this.optionsGroupBox.ResumeLayout(false);
+            this.operationGroupBox.ResumeLayout(false);
             this.selectFileGroupBox.ResumeLayout(false);
             this.selectFileGroupBox.PerformLayout();
-            this.operationGroupBox.ResumeLayout(false);
             this.dataTableGroupBox.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.dataTableVisualisation)).EndInit();
             this.statusGroupBox.ResumeLayout(false);
             this.statusGroupBox.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataTableVisualisation)).EndInit();
             this.ResumeLayout(false);
 
         }

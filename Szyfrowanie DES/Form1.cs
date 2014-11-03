@@ -13,6 +13,10 @@ namespace Szyfrowanie_DES
 {
     public partial class EncryptDES : Form
     {
+        private byte[][] blocksArray;
+
+        private byte[] dataArray;
+
         public EncryptDES()
         {
             InitializeComponent();
@@ -20,6 +24,7 @@ namespace Szyfrowanie_DES
         private string fileLocation;
         private void selectFileButton_Click(object sender, EventArgs e)
         {
+            selectOperationButton.Enabled = false;
             selectedFileLink.Text = string.Empty;
             operationGroupBox.Enabled = false;
             readFileButton.Enabled = false;
@@ -44,35 +49,55 @@ namespace Szyfrowanie_DES
         private void readFileButton_Click(object sender, EventArgs e)
         {
             operationGroupBox.Enabled = true;
-
             dataTableGroupBox.Enabled = true;
-            FileStream file = new FileStream(fileLocation,FileMode.Open,FileAccess.Read);
-            byte[] dataArray = new byte[file.Length];
-            long lengthBlock = file.Length / 16;
-            byte[][] blocksArray = new byte [16][];
-            BinaryReader br = new BinaryReader(file);
-            statusLabel.Text = (file.Length).ToString() + " | " + ((lengthBlock)*16).ToString();
-            long arrayPosition = 0;
-            for (int i = 0; i < file.Length; i++)
-            {
-                dataArray[i] = br.ReadByte();
-            }
-            DataGridViewCell tmpTable;
-            
+
             dataTableVisualisation.ColumnHeadersVisible = false;
             dataTableVisualisation.RowHeadersVisible = false;
-            dataTableVisualisation.ColumnCount = 16;
-            dataTableVisualisation.RowCount = (int)lengthBlock;
-            for (int i = 0; i < 16; i++)
-            {
-                blocksArray[i] = new byte[lengthBlock];
+            DataPrepare dataPrepare = new DataPrepare();
+
+            int lengthBlock = 16;
+
+            dataArray = dataPrepare.readFile(fileLocation);
+           
+            blocksArray = dataPrepare.divideToBlocks(dataArray, lengthBlock);
+            
+            dataTableVisualisation.ColumnCount = lengthBlock;
+            dataTableVisualisation.RowCount = (int)blocksArray.Length;
+            statusLabel.Text = "Dane zostały wczytane";
+            statusLabel.ForeColor = Color.Green;
+
+
+            for (int i = 0; i < blocksArray.Length; i++)
+            {             
                 for (int j = 0; j < lengthBlock; j++)
                 {
-                    blocksArray[i][j] = dataArray[arrayPosition];
-                    arrayPosition += 1;
-                    dataTableVisualisation.Rows[j].Cells[i].Value = blocksArray[i][j];
+                    dataTableVisualisation.Rows[i].Cells[j].Value = blocksArray[i][j];
                 }
                       
+            }
+            operationsComboBox.Items.Clear();
+            operationsComboBox.Items.Add("Zaszyfruj");
+            operationsComboBox.Items.Add("Odszyfruj");
+        }
+
+        private void operationsComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            selectOperationButton.Enabled = true;
+        }
+
+        private void selectOperationButton_Click(object sender, EventArgs e)
+        {
+            DataPrepare dataPrepare = new DataPrepare();
+
+            if (operationsComboBox.SelectedItem.Equals("Odszyfruj"))
+            {
+                statusLabel.Text = "Dane zostały odszyfrowane";
+                dataArray = dataPrepare.integrateBlocks(blocksArray);
+                dataPrepare.writeFile(fileLocation, dataArray);
+            }
+            else
+            {
+                statusLabel.Text = "Dane zostały zaszyfrowane";
             }
         }
     }
