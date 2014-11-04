@@ -9,7 +9,6 @@ namespace Szyfrowanie_DES
 {
     class DataPrepare
     {
-        
         private byte[] addRestBlock(byte[] dataArray, int blockLength, int position)
         {
             byte[] block = new byte[blockLength];
@@ -64,22 +63,28 @@ namespace Szyfrowanie_DES
         }
         public byte[] integrateBlocks(byte[][] blocksArray)
         {
-            byte[] dataArray = new byte[blocksArray.Length * blocksArray[1].Length];
+            
             int arrayCounter = 0;
          
             int additionContent = blocksArray[blocksArray.Length - 1][blocksArray[blocksArray.Length-1].Length-1];
             int restBlockByte = 16 - additionContent - 1;
+            
             bool doing = true;
             for (int i = 0; i < additionContent; i++)
             {
                 if (blocksArray[blocksArray.Length - 1][blocksArray[blocksArray.Length - 1].Length - i - 2] != 0x00)
                 {
                     doing = false;
+                    additionContent = 0;
                     break;
-                }
-                   
-
+                }                    
             }
+
+            if (doing == true)
+                additionContent += 1;
+            
+            byte[] dataArray = new byte[(blocksArray.Length * blocksArray[1].Length)-additionContent];
+
             for (int i = 0; i < blocksArray.Length; i++)
             {
                 if(i == blocksArray.Length-1)
@@ -101,7 +106,6 @@ namespace Szyfrowanie_DES
             }
             return dataArray;
         }
-
         public byte [] readFile(string nameFile)
         {
             FileStream file = new FileStream(nameFile, FileMode.Open, FileAccess.Read);
@@ -115,7 +119,6 @@ namespace Szyfrowanie_DES
             file.Close();
             return dataArray;
         }
-
         public void writeFile(string nameFile, byte[] dataArray)
         {
             FileStream file = new FileStream(nameFile, FileMode.Open, FileAccess.Write);
