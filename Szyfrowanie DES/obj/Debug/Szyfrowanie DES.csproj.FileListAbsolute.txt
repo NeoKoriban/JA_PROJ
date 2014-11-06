@@ -6,3 +6,4 @@ C:\Users\samsung\documents\visual studio 2013\Projects\Szyfrowanie DES\Szyfrowan
 C:\Users\samsung\documents\visual studio 2013\Projects\Szyfrowanie DES\Szyfrowanie DES\obj\Debug\Szyfrowanie DES.csproj.GenerateResource.Cache
 C:\Users\samsung\documents\visual studio 2013\Projects\Szyfrowanie DES\Szyfrowanie DES\obj\Debug\Szyfrowanie DES.exe
 C:\Users\samsung\documents\visual studio 2013\Projects\Szyfrowanie DES\Szyfrowanie DES\obj\Debug\Szyfrowanie DES.pdb
+C:\Users\samsung\documents\visual studio 2013\Projects\Szyfrowanie DES\Szyfrowanie DES\obj\Debug\Szyfrowanie DES.csprojResolveAssemblyReference.cache

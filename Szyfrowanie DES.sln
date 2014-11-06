@@ -5,10 +5,10 @@ VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Szyfrowanie DES", "Szyfrowanie DES\Szyfrowanie DES.csproj", "{EE576036-589A-4576-ABB5-DBBAA9EE66C6}"
 	ProjectSection(ProjectDependencies) = postProject
-		{FFEE95A7-7A0E-479D-B5A3-E2749D2DA911} = {FFEE95A7-7A0E-479D-B5A3-E2749D2DA911}
+		{F230FFCE-A527-4EE7-904D-3E2FCE866EBB} = {F230FFCE-A527-4EE7-904D-3E2FCE866EBB}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AsemberDES", "AsemberDES\AsemberDES.vcxproj", "{FFEE95A7-7A0E-479D-B5A3-E2749D2DA911}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AsemblerDES", "AsemblerDES\AsemblerDES.vcxproj", "{F230FFCE-A527-4EE7-904D-3E2FCE866EBB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -30,16 +30,16 @@ Global
 		{EE576036-589A-4576-ABB5-DBBAA9EE66C6}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{EE576036-589A-4576-ABB5-DBBAA9EE66C6}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{EE576036-589A-4576-ABB5-DBBAA9EE66C6}.Release|Win32.ActiveCfg = Release|Any CPU
-		{FFEE95A7-7A0E-479D-B5A3-E2749D2DA911}.Debug|Any CPU.ActiveCfg = Debug|Win32
-		{FFEE95A7-7A0E-479D-B5A3-E2749D2DA911}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
-		{FFEE95A7-7A0E-479D-B5A3-E2749D2DA911}.Debug|Mixed Platforms.Build.0 = Debug|Win32
-		{FFEE95A7-7A0E-479D-B5A3-E2749D2DA911}.Debug|Win32.ActiveCfg = Debug|Win32
-		{FFEE95A7-7A0E-479D-B5A3-E2749D2DA911}.Debug|Win32.Build.0 = Debug|Win32
-		{FFEE95A7-7A0E-479D-B5A3-E2749D2DA911}.Release|Any CPU.ActiveCfg = Release|Win32
-		{FFEE95A7-7A0E-479D-B5A3-E2749D2DA911}.Release|Mixed Platforms.ActiveCfg = Release|Win32
-		{FFEE95A7-7A0E-479D-B5A3-E2749D2DA911}.Release|Mixed Platforms.Build.0 = Release|Win32
-		{FFEE95A7-7A0E-479D-B5A3-E2749D2DA911}.Release|Win32.ActiveCfg = Release|Win32
-		{FFEE95A7-7A0E-479D-B5A3-E2749D2DA911}.Release|Win32.Build.0 = Release|Win32
+		{F230FFCE-A527-4EE7-904D-3E2FCE866EBB}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{F230FFCE-A527-4EE7-904D-3E2FCE866EBB}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
+		{F230FFCE-A527-4EE7-904D-3E2FCE866EBB}.Debug|Mixed Platforms.Build.0 = Debug|Win32
+		{F230FFCE-A527-4EE7-904D-3E2FCE866EBB}.Debug|Win32.ActiveCfg = Debug|Win32
+		{F230FFCE-A527-4EE7-904D-3E2FCE866EBB}.Debug|Win32.Build.0 = Debug|Win32
+		{F230FFCE-A527-4EE7-904D-3E2FCE866EBB}.Release|Any CPU.ActiveCfg = Release|Win32
+		{F230FFCE-A527-4EE7-904D-3E2FCE866EBB}.Release|Mixed Platforms.ActiveCfg = Release|Win32
+		{F230FFCE-A527-4EE7-904D-3E2FCE866EBB}.Release|Mixed Platforms.Build.0 = Release|Win32
+		{F230FFCE-A527-4EE7-904D-3E2FCE866EBB}.Release|Win32.ActiveCfg = Release|Win32
+		{F230FFCE-A527-4EE7-904D-3E2FCE866EBB}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -15,9 +15,9 @@ using System.Windows.Forms;
 namespace Szyfrowanie_DES
 { 
     public partial class EncryptDES : Form
-    {[DllImport("AsemblerDES.dll")]
+    {[DllImport("AsemblerDES.dll", CallingConvention = CallingConvention.StdCall)]
 
-        public static extern int Dodaj(int a, int b);
+        public static extern int Dodaj(int [] a, int b);
         //
         private byte[][] blocksArray;
         //
@@ -104,8 +104,9 @@ namespace Szyfrowanie_DES
             }
             else
             {
-                int cos = Dodaj(2, 3);
-                statusLabel.Text = "Dane zostały zaszyfrowane" + cos;
+                int [] tab = {1,6,3};
+                int cos = Dodaj(tab, 3);
+                statusLabel.Text = "" + cos;
             }
         }
     }
