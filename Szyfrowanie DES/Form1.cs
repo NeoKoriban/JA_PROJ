@@ -17,7 +17,7 @@ namespace Szyfrowanie_DES
     public partial class EncryptDES : Form
     {[DllImport("AsemblerDES.dll", CallingConvention = CallingConvention.StdCall)]
 
-        public static extern int Dodaj(int [] a, int b);
+        public static extern int Dodaj(byte []  a, byte []  b);
         //
         private byte[][] blocksArray;
         //
@@ -104,9 +104,16 @@ namespace Szyfrowanie_DES
             }
             else
             {
-                int [] tab = {1,6,3};
-                int cos = Dodaj(tab, 3);
-                statusLabel.Text = "" + cos;
+                byte[] key = { 4, 6, 23, 222, 16, 42, 5, 7 };
+                byte[] key2 = { 0, 0, 0, 0, 0, 0, 0 };
+                byte [] keyTest =  {12, 6};
+
+                byte [] keyTest2 = {0, 0};
+              
+                int cos = Dodaj(key,key2);
+                statusLabel.Text =     key2[0] + " " + key2[1] + " " + key2[2] + " "+//+ keyTest[6]
+                                       key2[3] + " " + key2[4] + " " + key2[5] + " "+
+                                       key2[6] + " " ;
             }
         }
     }
