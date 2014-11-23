@@ -105,15 +105,15 @@ namespace Szyfrowanie_DES
             else
             {
                 byte[] key = { 4, 6, 23, 222, 16, 42, 5, 7 };
-                byte[] key2 = { 0, 0, 0, 0, 0, 0, 0 };
+                byte[] key2 = { 0, 0, 0, 0, 0, 0 };
                 byte [] keyTest =  {12, 6};
 
                 byte [] keyTest2 = {0, 0};
               
                 int cos = Dodaj(key,key2);
                 statusLabel.Text =     key2[0] + " " + key2[1] + " " + key2[2] + " "+//+ keyTest[6]
-                                       key2[3] + " " + key2[4] + " " + key2[5] + " "+
-                                       key2[6] + " " ;
+                                       key2[3] + " " + key2[4] + " " + key2[5] 
+                                       ;
             }
         }
     }
