@@ -1,0 +1,4 @@
+﻿C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V120\Microsoft.CppBuild.targets(357,5): warning MSB8004: Output Directory does not end with a trailing slash.  This build instance will add the slash as it is required to allow proper evaluation of the Output Directory.
+  Assembling Encrypt.asm...
+Encrypt.asm(1441): warning A6004: procedure argument or local not referenced : a
+  AsemblerDES.vcxproj -> C:\Users\samsung\documents\visual studio 2013\Projects\Szyfrowanie DES\AsemblerDES\..\Szyfrowanie DES\bin\Debug\AsemblerDES.dll

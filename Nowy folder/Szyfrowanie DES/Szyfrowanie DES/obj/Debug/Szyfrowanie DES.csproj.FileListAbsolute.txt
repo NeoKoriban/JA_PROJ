@@ -1,0 +1,9 @@
+C:\Users\samsung\documents\visual studio 2013\Projects\Szyfrowanie DES\Szyfrowanie DES\bin\Debug\Szyfrowanie DES.exe.config
+C:\Users\samsung\documents\visual studio 2013\Projects\Szyfrowanie DES\Szyfrowanie DES\bin\Debug\Szyfrowanie DES.exe
+C:\Users\samsung\documents\visual studio 2013\Projects\Szyfrowanie DES\Szyfrowanie DES\bin\Debug\Szyfrowanie DES.pdb
+C:\Users\samsung\documents\visual studio 2013\Projects\Szyfrowanie DES\Szyfrowanie DES\obj\Debug\Szyfrowanie_DES.EncryptDES.resources
+C:\Users\samsung\documents\visual studio 2013\Projects\Szyfrowanie DES\Szyfrowanie DES\obj\Debug\Szyfrowanie_DES.Properties.Resources.resources
+C:\Users\samsung\documents\visual studio 2013\Projects\Szyfrowanie DES\Szyfrowanie DES\obj\Debug\Szyfrowanie DES.csproj.GenerateResource.Cache
+C:\Users\samsung\documents\visual studio 2013\Projects\Szyfrowanie DES\Szyfrowanie DES\obj\Debug\Szyfrowanie DES.exe
+C:\Users\samsung\documents\visual studio 2013\Projects\Szyfrowanie DES\Szyfrowanie DES\obj\Debug\Szyfrowanie DES.pdb
+C:\Users\samsung\documents\visual studio 2013\Projects\Szyfrowanie DES\Szyfrowanie DES\obj\Debug\Szyfrowanie DES.csprojResolveAssemblyReference.cache
