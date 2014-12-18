@@ -9,6 +9,7 @@ using System.Text;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Threading;
 
 
 
@@ -16,8 +17,9 @@ namespace Szyfrowanie_DES
 { 
     public partial class EncryptDES : Form
     {[DllImport("AsemblerDES.dll", CallingConvention = CallingConvention.StdCall)]
-
         public static extern int Szyfruj(byte []  a, byte []  b);
+        [DllImport("AsemblerDES.dll", CallingConvention = CallingConvention.StdCall)]
+        public static extern int Deszyfruj(byte[] a, byte[] b);
         //
         private byte[][] blocksArray;
         //
@@ -99,21 +101,26 @@ namespace Szyfrowanie_DES
             if (operationsComboBox.SelectedItem.Equals("Odszyfruj"))
             {
                 statusLabel.Text = "Dane zostały odszyfrowane";
+                
+                for (int i = 0; i < blocksArray.Length / 16; i++)
+                {
+                    int cos = Deszyfruj(blocksArray[i], blocksArray[i]);
+                }
                 dataArray = dataPrepare.integrateBlocks(blocksArray);
                 dataPrepare.writeFile(fileLocation, dataArray);
             }
             else
             {
-                byte[] key = { 1, 3, 5, 2, 4, 7, 6, 10 };
-                byte[] key2 = { 0, 0, 0, 0, 0, 0 };
-                byte [] keyTest =  {12, 6};
+                statusLabel.Text = "Dane zostały odszyfrowane";
 
-                byte [] keyTest2 = {0, 0};
+                for(int i = 0; i < blocksArray.Length/16; i++) 
+                {
+                    int cos = Szyfruj(blocksArray[i],blocksArray[i]);
+                }
+                dataArray = dataPrepare.integrateBlocks(blocksArray);
+                dataPrepare.writeFile(fileLocation, dataArray);
               
-                int cos = Szyfruj(key,key2);
-                statusLabel.Text =     key2[0] + " " + key2[1] + " " + key2[2] + " "+
-                                       key2[3] + " " + key2[4] + " " + key2[5] 
-                                       ;
+
             }
         }
     }

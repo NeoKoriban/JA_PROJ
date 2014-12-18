@@ -94,6 +94,8 @@ INCLUDE    \masm32\include\windows.inc
 
 	leftSide	  byte 0, 0, 0, 0
 	rightSide     byte 0, 0, 0, 0
+	newrightSide  byte 0, 0, 0, 0
+	oldrightSide  byte 0, 0, 0, 0
 	rightEPermRes byte 0, 0, 0, 0, 0, 0
 	
 	S1_00 dword	14,	 4, 13,  1,  2, 15, 11,  8,  3, 10,  6,	12,  5,  9,  0,  7
@@ -147,7 +149,8 @@ INCLUDE    \masm32\include\windows.inc
 								35,	 3,	43,	11,	51,	19,	59,	27,
 								34,	 2,	42,	10,	50,	18,	58,	26,
 								33,	 1,	41,  9,	49,	17,	57,	25
-
+	newData byte	0, 0, 0, 0, 0, 0, 0, 0
+	finalData byte	0, 0, 0, 0, 0, 0, 0, 0
 	arrayKeySize dword 8
 	bitNewKeySize dword 56
 
@@ -1506,81 +1509,535 @@ PrzygotowanieKlucza endp
 ;
 ;------------------------------------------------------------------------------------------------------------
 AddValue proc
-	cmp edi, 0
+	cmp esi, 0
 	je firstValue
-	cmp edi, 1
+	cmp esi, 1
 	je secondValue
-	cmp edi, 2
+	cmp esi, 2
 	je thirdValue
-	cmp edi, 3
+	cmp esi, 3
 	je fourthValue
-	cmp edi, 4
+	cmp esi, 4
 	je fifthValue
-	cmp edi, 5
+	cmp esi, 5
 	je sixthValue
-	inc edi
-	jmp koniec
 
 firstValue:
 	and al, cl
-	cmp al, 1
+	cmp al, cl
 	je dodaj2p
-	ret
+	jmp koniec
 
 secondValue:
 	and al, cl
-	cmp al, 1
+	cmp al, cl
 	je dodaj8s
+	jmp koniec
 
 thirdValue:
 	and al, cl
-	cmp al, 1
+	cmp al, cl
 	je dodaj4s
+	jmp koniec
 
 fourthValue:
-	and al, cl
-	cmp al, 1
+	and al, cl	
+	cmp al, cl
 	je dodaj2s
-	ret
+	jmp koniec
 
 fifthValue:
-	and al, cl
-	cmp al, 1
+	and al, cl	
+	cmp al, cl
 	je dodaj1s
+	jmp koniec
 
 sixthValue:
-	and al, cl
-	cmp al, 1
+	and al, cl	
+	cmp al, cl
 	je dodaj1p
+	jmp koniec
 
 dodaj2p:
 	add edx, 2
-	ret
+	jmp koniec
 
 dodaj1p:
 	add edx, 1
-	ret
+	jmp koniec
+
 
 dodaj8s:
 	add ebx, 8
-	ret
+	jmp koniec
 
 dodaj4s:
 	add ebx, 4
-	ret
+	jmp koniec
 
 dodaj2s:
 	add ebx, 2
-	ret
+	jmp koniec
 
 dodaj1s:
 	add ebx, 1
-	ret
+	jmp koniec
 
 koniec:
+	inc esi
 	ret
 
 AddValue endp
+	
+InsertValueRightSide1 proc
+	shl al, 4
+	movd edi,mm5
+	mov byte ptr [rightSide+edi], 0
+	mov byte ptr [rightSide+edi], al
+	movd mm5, edi
+	call startParameters
+	mov edx,0
+	mov ebx,0
+	
+	ret
+InsertValueRightSide1 endp
+
+InsertValueRightSide2 proc
+	movd mm0, eax
+	movd edi, mm5
+	mov al, byte ptr [rightSide+edi]
+	movd mm1, eax
+	por mm0, mm1
+	movd eax, mm0
+	mov byte ptr [rightSide+edi], al
+	inc edi
+	movd mm5, edi
+	call startParameters
+		mov edx,0
+	mov ebx,0
+	ret
+InsertValueRightSide2 endp
+
+siteration proc
+	call startParameters
+	
+oldequalsright:
+	mov cl, byte ptr [rightSide+edi]
+	mov byte ptr [oldrightSide+edi], cl
+	inc edi
+	cmp edi,4
+	jne oldequalsright
+	call startParameters
+	mov esi, 0
+	mov edi, 0
+
+EpermutationLoop1:
+	mov	edx, 0								
+	mov al, byte ptr[dataEPermutation1+esi*4]
+	div arrayKeySize
+	cmp edx,0
+	jne continueEPermutation1					
+	mov edx,8
+	cmp eax,0
+	je continueEPermutation1				
+	dec eax
+
+continueEPermutation1:						
+	mov al, byte ptr[rightSide+eax]			
+	call loopChangeBitValue
+	cmp edi, 8
+	jne EpermutationLoop1
+	movd edi, mm3							
+	mov byte ptr[rightEPermRes+edi], al		
+	call ediSet
+	cmp esi, 24
+	jne EpermutationLoop1
+	call startParameters
+
+EpermutationLoop2:
+	mov	edx, 0								
+	mov al, byte ptr[dataEPermutation2+esi*4]
+	div arrayKeySize
+	cmp edx,0
+	jne continueEPermutation2					
+	mov edx,8
+	cmp eax,0
+	je continueEPermutation2				
+	dec eax
+
+continueEPermutation2:						
+	mov al, byte ptr[rightSide+eax]			
+	call loopChangeBitValue
+	cmp edi, 8
+	jne EpermutationLoop2
+	movd edi, mm3							
+	mov byte ptr[rightEPermRes+edi+3], al		
+	call ediSet
+	cmp esi, 24
+	jne EpermutationLoop2
+	call startParameters
+	ret
+siteration endp
+
+cditeration proc
+	call startParameters
+	mov edx, 0
+	mov esi, 0
+	mov ebx, 0
+	mov edi, 0
+	movd mm5, edi
+	
+podpetla1Value:
+	mov al, byte ptr [rightEPermRes+0]
+	mov cl, byte ptr [SPom_1_1+esi]
+	call AddValue
+	cmp esi,6
+	jne podpetla1Value
+	mov esi, 0								; wyzerowanie esi
+											; sprawdzenie która tablica ma zostaæ wziêta pod uwagê
+	cmp dl, 0
+	je sb1_00
+	cmp dl, 1
+	je sb1_01
+	cmp dl, 2
+	je sb1_10
+	cmp dl, 3
+	je sb1_11
+next11:
+	call InsertValueRightSide1
+	jmp podpetla2aValue
+
+sb1_00:
+	mov al, byte ptr [S1_00+ebx]
+	jmp next11
+sb1_01:
+	mov al, byte ptr [S1_01+ebx]
+	jmp next11
+sb1_10:
+	mov al, byte ptr [S1_10+ebx]
+	jmp next11
+sb1_11:
+	mov al, byte ptr [S1_11+ebx]
+	jmp next11
+	
+podpetla2aValue:
+	mov al, byte ptr [rightEPermRes+0]
+	mov cl, byte ptr [SPom_1_2+esi]
+	call AddValue
+	cmp esi,2
+	jne podpetla2aValue
+podpetla2bValue:
+	mov al, byte ptr [rightEPermRes+1]
+	mov cl, byte ptr [SPom_1_2+esi]
+	call AddValue
+	cmp esi,6
+	jne podpetla2bValue
+	mov esi, 0
+	cmp dl, 0
+	je sb2_00
+	cmp edx, 1
+	je sb2_01
+	cmp edx, 2
+	je sb2_10
+	cmp edx, 3
+	je sb2_11
+next12:
+	call InsertValueRightSide2
+	jmp podpetla3aValue
+
+sb2_00:
+	mov al, byte ptr [S2_00+ebx]
+	jmp next12
+sb2_01:
+	mov al, byte ptr [S2_01+ebx]
+	jmp next12
+sb2_10:
+	mov al, byte ptr [S2_10+ebx]
+	jmp next12
+sb2_11:
+	mov al, byte ptr [S2_11+ebx]
+	jmp next12
+
+podpetla3aValue:
+	mov al, byte ptr [rightEPermRes+1]
+	mov cl, byte ptr [SPom_2_1+esi]
+	call AddValue
+	cmp esi,4 
+	jne podpetla3aValue
+podpetla3bValue:
+	mov al, byte ptr [rightEPermRes+2]
+	mov cl, byte ptr [SPom_2_1+esi]
+	call AddValue
+	cmp esi,6
+	jne podpetla3bValue
+	mov esi, 0
+	cmp edx, 0
+	je sb3_00
+	cmp edx, 1
+	je sb3_01
+	cmp edx, 2
+	je sb3_10
+	cmp edx, 3
+	je sb3_11
+next21:
+	call InsertValueRightSide1
+	jmp podpetla4Value
+
+sb3_00:
+	mov al, byte ptr [S3_00+ebx]
+	jmp next21
+sb3_01:
+	mov al, byte ptr [S3_01+ebx]
+	jmp next21
+sb3_10:
+	mov al, byte ptr [S3_10+ebx]
+	jmp next21
+sb3_11:
+	mov al, byte ptr [S3_11+ebx]
+	jmp next21
+
+podpetla4Value:
+	mov al, byte ptr [rightEPermRes+2]
+	mov cl, byte ptr [SPom_2_2+esi]
+	call AddValue
+	cmp esi,6
+	jne podpetla4Value
+	mov esi, 0
+	cmp dl, 0
+	je sb4_00
+	cmp dl, 1
+	je sb4_01
+	cmp dl, 2
+	je sb4_10
+	cmp dl, 3
+	je sb4_11
+next22:
+	call InsertValueRightSide2
+	jmp podpetla5Value
+
+sb4_00:
+	mov al, byte ptr [S4_00+ebx]
+	jmp next22
+sb4_01:
+	mov al, byte ptr [S4_01+ebx]
+	jmp next22
+sb4_10:
+	mov al, byte ptr [S4_10+ebx]
+	jmp next22
+sb4_11:
+	mov al, byte ptr [S4_11+ebx]
+	jmp next22
+
+podpetla5Value:
+	mov al, byte ptr [rightEPermRes+3]
+	mov cl, byte ptr [SPom_1_1+esi]
+	call AddValue
+	cmp esi,6
+	jne podpetla5Value
+	mov esi, 0								; wyzerowanie esi
+											; sprawdzenie która tablica ma zostaæ wziêta pod uwagê
+	cmp dl, 0
+	je sb5_00
+	cmp dl, 1
+	je sb5_01
+	cmp dl, 2
+	je sb5_10
+	cmp dl, 3
+	je sb5_11
+next31:
+	call InsertValueRightSide1
+	jmp podpetla6aValue
+
+sb5_00:
+	mov al, byte ptr [S5_00+ebx]
+	jmp next31
+sb5_01:
+	mov al, byte ptr [S5_01+ebx]
+	jmp next31
+sb5_10:
+	mov al, byte ptr [S5_10+ebx]
+	jmp next31
+sb5_11:
+	mov al, byte ptr [S5_11+ebx]
+	jmp next31
+
+podpetla6aValue:
+	mov al, byte ptr [rightEPermRes+3]
+	mov cl, byte ptr [SPom_1_2+esi]
+	call AddValue
+	cmp esi,2
+	jne podpetla6aValue
+podpetla6bValue:
+	mov al, byte ptr [rightEPermRes+4]
+	mov cl, byte ptr [SPom_1_2+esi]
+	call AddValue
+	cmp esi,6
+	jne podpetla6bValue
+	mov esi, 0
+	cmp dl, 0
+	je sb6_00
+	cmp edx, 1
+	je sb6_01
+	cmp edx, 2
+	je sb6_10
+	cmp edx, 3
+	je sb6_11
+next32:
+	call InsertValueRightSide2
+	jmp podpetla7aValue
+
+sb6_00:
+	mov al, byte ptr [S6_00+ebx]
+	jmp next32
+sb6_01:
+	mov al, byte ptr [S6_01+ebx]
+	jmp next32
+sb6_10:
+	mov al, byte ptr [S6_10+ebx]
+	jmp next32
+sb6_11:
+	mov al, byte ptr [S6_11+ebx]
+	jmp next32
+
+podpetla7aValue:
+	mov al, byte ptr [rightEPermRes+4]
+	mov cl, byte ptr [SPom_2_1+esi]
+	call AddValue
+	cmp esi,4 
+	jne podpetla7aValue
+podpetla7bValue:
+	mov al, byte ptr [rightEPermRes+5]
+	mov cl, byte ptr [SPom_2_1+esi]
+	call AddValue
+	cmp esi,6
+	jne podpetla7bValue
+	mov esi, 0
+	cmp dl, 0
+	je sb7_00
+	cmp dl, 1
+	je sb7_01
+	cmp dl, 2
+	je sb7_10
+	cmp dl, 3
+	je sb7_11
+next41:
+	call InsertValueRightSide1
+	jmp podpetla8Value
+
+sb7_00:
+	mov al, byte ptr [S7_00+ebx]
+	jmp next41
+sb7_01:
+	mov al, byte ptr [S7_01+ebx]
+	jmp next41
+sb7_10:
+	mov al, byte ptr [S7_10+ebx]
+	jmp next41
+sb7_11:
+	mov al, byte ptr [S7_11+ebx]
+	jmp next41
+
+podpetla8Value:
+	mov al, byte ptr [rightEPermRes+5]
+	mov cl, byte ptr [SPom_2_2+esi]
+	call AddValue
+	cmp esi,6
+	jne podpetla8Value
+
+	cmp dl, 0
+	je sb8_00
+	cmp dl, 1
+	je sb8_01
+	cmp dl, 2
+	je sb8_10
+	cmp dl, 3
+	je sb8_11
+next42:
+	call InsertValueRightSide2
+	jmp sboxPermLoop
+
+sb8_00:
+	mov al, byte ptr [S8_00+ebx]
+	jmp next42
+sb8_01:
+	mov al, byte ptr [S8_01+ebx]
+	jmp next42
+sb8_10:
+	mov al, byte ptr [S8_10+ebx]
+	jmp next42
+sb8_11:
+	mov al, byte ptr [S8_11+ebx]
+	jmp next42
+
+call startParameters
+mov esi, 0
+mov edi, 0
+
+sboxPermLoop:
+	mov	edx, 0								; przypisanie 0, w miejsce gdzie bedzie zapisana wartoœæ reszty z dzielenia						
+	mov al, byte ptr[sboxedPerm +esi] ; pobranie wartoœci który bajt
+	div arrayKeySize
+	cmp edx,0
+	jne continuePerm
+	mov edx,8
+	cmp eax,0
+	je continuePerm
+	dec eax
+
+continuePerm:						
+	mov al, byte ptr[rightSide+eax]				; pobranie bajtu klucza z danej pozycji
+	call loopChangeBitValue
+	cmp edi, 8
+	jne sboxPermLoop
+
+	movd edi, mm3							; edi = mm3
+	mov byte ptr[newrightSide+edi], al			; zapisanie do tablicy newKey wartoœci z eax
+	call ediSet
+	cmp esi, 32
+	jne sboxPermLoop
+	call startParameters
+	mov esi, 0
+	mov edi, 0
+
+	xorRandL:
+	mov al, byte ptr [leftSide+edi]
+	movd mm0, eax
+	mov dl, byte ptr [newrightSide+edi]
+	movd mm1, edx
+	pxor mm1, mm0
+	movd ecx, mm1
+	mov byte ptr[rightSide+edi], cl
+	inc edi
+	cmp edi,4
+	jne xorRandL
+
+	call startParameters
+	mov esi, 0
+	mov edi, 0
+
+rightequalsleft:
+	mov cl, byte ptr [oldrightSide+edi]
+	mov byte ptr [leftSide+edi], cl
+	inc edi
+	cmp edi,4
+	jne rightequalsleft
+	call startParameters
+	mov esi, 0
+	mov edi, 0
+	
+	ret
+cditeration endp
+
+subXorFunction proc
+	movd mm0, eax
+	mov dl, byte ptr [rightEPermRes+edi]
+	movd mm1, edx
+	pxor mm1, mm0
+	movd ecx, mm1
+	mov byte ptr[rightEPermRes+edi], cl
+	inc edi
+	ret
+subXorFunction endp
 ;------------------------------------------------------------------------------------------------------------
 ;
 ;------------------------------------------------------------------------------------------------------------
@@ -1634,218 +2091,463 @@ continueDataPermutation2:
 	call ediSet
 	cmp esi, 32
 	jne dataPermutationLoop2
-	call startParameters
 	
-EpermutationLoop1:
-	mov	edx, 0								
-	mov al, byte ptr[dataEPermutation1+esi*4]
-	div arrayKeySize
-	cmp edx,0
-	jne continueEPermutation1					
-	mov edx,8
-	cmp eax,0
-	je continueEPermutation1				
-	dec eax
-
-continueEPermutation1:						
-	mov al, byte ptr[rightSide+eax]			
-	call loopChangeBitValue
-	cmp edi, 8
-	jne EpermutationLoop1
-	movd edi, mm3							
-	mov byte ptr[rightEPermRes+edi], al		
-	call ediSet
-	cmp esi, 24
-	jne EpermutationLoop1
-	call startParameters
-
-EpermutationLoop2:
-	mov	edx, 0								
-	mov al, byte ptr[dataEPermutation2+esi*4]
-	div arrayKeySize
-	cmp edx,0
-	jne continueEPermutation2					
-	mov edx,8
-	cmp eax,0
-	je continueEPermutation2				
-	dec eax
-
-continueEPermutation2:						
-	mov al, byte ptr[rightSide+eax]			
-	call loopChangeBitValue
-	cmp edi, 8
-	jne EpermutationLoop2
-	movd edi, mm3							
-	mov byte ptr[rightEPermRes+edi+3], al		
-	call ediSet
-	cmp esi, 24
-	jne EpermutationLoop2
-	call startParameters
-
+	call siteration
 DaneDoXorLoop1:
 	mov al, byte ptr [finalSubKey1+edi]
-	movd mm0, eax
-	mov dl, byte ptr [rightEPermRes+edi]
-	movd mm1, edx
-	pxor mm1, mm0
-	movd ecx, mm1
-	mov byte ptr[rightEPermRes+edi], cl
-	inc edi
+	call subXorFunction
 	cmp edi,6
 	jne DaneDoXorLoop1
-	
+	call cditeration
+
+	call siteration
+DaneDoXorLoop2:
+	mov al, byte ptr [finalSubKey2+edi]
+	call subXorFunction
+	cmp edi,6
+	jne DaneDoXorLoop2
+	call cditeration
+
+	call siteration
+DaneDoXorLoop3:
+	mov al, byte ptr [finalSubKey3+edi]
+	call subXorFunction
+	cmp edi,6
+	jne DaneDoXorLoop3
+	call cditeration
+
+	call siteration
+DaneDoXorLoop4:
+	mov al, byte ptr [finalSubKey4+edi]
+	call subXorFunction
+	cmp edi,6
+	jne DaneDoXorLoop4
+	call cditeration
+
+	call siteration
+DaneDoXorLoop5:
+	mov al, byte ptr [finalSubKey5+edi]
+	call subXorFunction
+	cmp edi,6
+	jne DaneDoXorLoop5
+	call cditeration
+
+	call siteration
+DaneDoXorLoop6:
+	mov al, byte ptr [finalSubKey6+edi]
+	call subXorFunction
+	cmp edi,6
+	jne DaneDoXorLoop6
+	call cditeration
+
+	call siteration
+DaneDoXorLoop7:
+	mov al, byte ptr [finalSubKey7+edi]
+	call subXorFunction
+	cmp edi,6
+	jne DaneDoXorLoop7
+	call cditeration
+
+	call siteration
+DaneDoXorLoop8:
+	mov al, byte ptr [finalSubKey8+edi]
+	call subXorFunction
+	cmp edi,6
+	jne DaneDoXorLoop8
+	call cditeration
+
+	call siteration
+DaneDoXorLoop9:
+	mov al, byte ptr [finalSubKey9+edi]
+	call subXorFunction
+	cmp edi,6
+	jne DaneDoXorLoop9
+	call cditeration
+
+	call siteration
+DaneDoXorLoop10:
+	mov al, byte ptr [finalSubKey10+edi]
+	call subXorFunction
+	cmp edi,6
+	jne DaneDoXorLoop10
+	call cditeration
+
+	call siteration
+DaneDoXorLoop11:
+	mov al, byte ptr [finalSubKey11+edi]
+	call subXorFunction
+	cmp edi,6
+	jne DaneDoXorLoop11
+	call cditeration
+
+	call siteration
+DaneDoXorLoop12:
+	mov al, byte ptr [finalSubKey12+edi]
+	call subXorFunction
+	cmp edi,6
+	jne DaneDoXorLoop12
+	call cditeration
+
+	call siteration
+DaneDoXorLoop13:
+	mov al, byte ptr [finalSubKey13+edi]
+	call subXorFunction
+	cmp edi,6
+	jne DaneDoXorLoop13
+	call cditeration
+
+	call siteration
+DaneDoXorLoop14:
+	mov al, byte ptr [finalSubKey14+edi]
+	call subXorFunction
+	cmp edi,6
+	jne DaneDoXorLoop14
+	call cditeration
+
+	call siteration
+DaneDoXorLoop15:
+	mov al, byte ptr [finalSubKey15+edi]
+	call subXorFunction
+	cmp edi,6
+	jne DaneDoXorLoop15
+	call cditeration
+
+	call siteration
+DaneDoXorLoop16:
+	mov al, byte ptr [finalSubKey16+edi]
+	call subXorFunction
+	cmp edi,6
+	jne DaneDoXorLoop16
+	call cditeration
+noweDane1:
+	mov ebx, encrypt
+	mov cl, byte ptr [rightSide+edi]
+	mov byte ptr [newData+edi], cl
+	inc edi
+	cmp edi,4
+	jne noweDane1
+noweDane2:
+	mov ebx, encrypt
+	mov cl, byte ptr [leftSide+edi-4]
+	mov byte ptr [newData+edi], cl
+	inc edi
+	cmp edi,8
+	jne noweDane2
 	call startParameters
-	mov dl, 0
-	mov esi, 0
-	mov ebx, 0
 
-petlaSbox1Value:
+finalP1:
+	mov	edx, 0								; przypisanie 0, w miejsce gdzie bedzie zapisana wartoœæ reszty z dzielenia						
+	mov al, byte ptr[finalDataPermutation1+esi] ; pobranie wartoœci który bajt
+	div arrayKeySize			
+	cmp edx,0
+	jne continueFinalP1
+	mov edx,8
+	cmp eax,0
+	je continueFinalP1
+	dec eax
 
-podpetla1Value:
-	mov al, byte ptr [rightEPermRes+0]
-	mov cl, byte ptr [SPom_1_1+esi]
-	call AddValue
-	inc esi
-	cmp esi,6
-	jne podpetla1Value
-	mov esi, 0
-	mov edi, 0
-	cmp dl, 0
-	je sb1_00
-	cmp dl, 1
-	je sb1_01
-	cmp dl, 2
-	je sb1_10
-	cmp dl, 3
-	je sb1_11
+continueFinalP1:			
+	mov al, byte ptr[newData+eax]				
+	call loopChangeBitValue
+	cmp edi, 8
+	jne finalP1
 
-next11:
-	shl al, 4
-	mov byte ptr [rightSide+0], al
+	movd edi, mm3							; edi = mm3
+	mov byte ptr[finalData+edi], al			; zapisanie do tablicy newKey wartoœci z eax
+	call ediSet
+	cmp esi, 32
+	jne finalP1
+
 	call startParameters
-	mov ecx,0
-	jmp podpetla2aValue
 
-sb1_00:
-	mov al, byte ptr [S1_00+ebx]
-	jmp next11
-sb1_01:
-	mov al, byte ptr [S1_01+ebx]
-	jmp next11
-sb1_10:
-	mov al, byte ptr [S1_10+ebx]
-	jmp next11
-sb1_11:
-	mov al, byte ptr [S1_11+ebx]
-	jmp next11
-	
-	
+finalP2:
+	mov	edx, 0								; przypisanie 0, w miejsce gdzie bedzie zapisana wartoœæ reszty z dzielenia						
+	mov al, byte ptr[finalDataPermutation2+esi] ; pobranie wartoœci który bajt
+	div arrayKeySize
+	cmp edx,0
+	jne continueFinalP2
+	mov edx,8
+	cmp eax,0
+	je continueFinalP2
+	dec eax
 
-podpetla2aValue:
-	mov al, byte ptr [rightEPermRes+0]
-	mov cl, byte ptr [SPom_1_2+esi]
-	call AddValue
-	inc esi
-	cmp esi,2
-	jne podpetla2aValue
+continueFinalP2:
+	mov al, byte ptr[newData+eax]				; pobranie bajtu klucza z danej pozycji
+	call loopChangeBitValue
+	cmp edi, 8
+	jne finalP2
 
-podpetla2bValue:
-	mov al, byte ptr [rightEPermRes+1]
-	mov cl, byte ptr [SPom_1_2+esi]
-	call AddValue
-	inc esi
-	cmp esi,6
-	jne podpetla2bValue
-
-	mov edx, 0
-	cmp dl, 0
-	je sb2_00
-	cmp edx, 1
-	je sb2_01
-	cmp edx, 2
-	je sb2_10
-	cmp edx, 3
-	je sb2_11
-
-next12:
-	movd mm0, eax
-	mov al, byte ptr [rightSide+0]
-	movd mm1, eax
-	por mm0, mm1
-	movd eax, mm0
-	mov byte ptr [rightSide+0], al
+	movd edi, mm3							; edi = mm3
+	mov byte ptr[finalData+edi+4], al			; zapisanie do tablicy newKey wartoœci z eax
+	call ediSet
+	cmp esi, 32
+	jne finalP2
 	call startParameters
-	mov edi, 0
-	mov ecx, 0
-	mov esi, 0
-	jmp podpetla3aValue
-
-sb2_00:
-	mov al, byte ptr [S2_00+ebx]
-	jmp next12
-sb2_01:
-	mov al, byte ptr [S2_01+ebx]
-	jmp next12
-sb2_10:
-	mov al, byte ptr [S2_10+ebx]
-	jmp next12
-sb2_11:
-	mov al, byte ptr [S2_11+ebx]
-	jmp next12
-
-podpetla3aValue:
-	mov al, byte ptr [rightEPermRes+1]
-	mov cl, byte ptr [SPom_2_1+esi]
-	call AddValue
-	inc esi
-	cmp esi,4
-	jne podpetla3aValue
-podpetla3bValue:
-	mov al, byte ptr [rightEPermRes+2]
-	mov cl, byte ptr [SPom_2_1+esi]
-	call AddValue
-	inc esi
-	cmp esi,6
-	jne podpetla3bValue
-
-	cmp edx, 0
-	je sb3_00
-	cmp edx, 1
-	je sb3_01
-	cmp edx, 2
-	je sb3_10
-	cmp edx, 3
-	je sb3_11
-
-next21:
-	;shl al, 4
-	mov byte ptr [rightSide+1], dl
-	call startParameters
-	mov edi, 0
-	jmp wpisanieDanych
-
-sb3_00:
-	mov al, byte ptr [S3_00+ebx]
-	jmp next21
-sb3_01:
-	mov al, byte ptr [S3_01+ebx]
-	jmp next21
-sb3_10:
-	mov al, byte ptr [S3_10+ebx]
-	jmp next21
-sb3_11:
-	mov al, byte ptr [S3_11+ebx]
-	jmp next21
 
 wpisanieDanych:
 	mov ebx, encrypt
-	mov cl, byte ptr [rightEPermRes+edi]
+	mov cl, byte ptr [finalData+edi]
 	mov byte ptr [ebx+edi], cl
 	inc edi
-	cmp edi,6
+	cmp edi,8
 	jne wpisanieDanych
 	emms
 	ret
 
 Szyfruj endp
+
+Deszyfruj proc data:dword, encrypt:dword
+	
+	call PrzygotowanieKlucza
+	mov ebx, data
+	call startParameters
+	
+dataPermutationLoop1:
+	mov	edx, 0								
+	mov al, byte ptr[dataStartPermutation1+esi*4]
+	div arrayKeySize
+	cmp edx,0
+	jne continueDataPermutation1						
+	mov edx,8
+	cmp eax,0
+	je continueDataPermutation1						
+	dec eax
+
+continueDataPermutation1:						
+	mov al, byte ptr[ebx+eax]			
+	call loopChangeBitValue
+	cmp edi, 8
+	jne dataPermutationLoop1
+	movd edi, mm3							
+	mov byte ptr[leftSide+edi], al		
+	call ediSet
+	cmp esi, 32
+	jne dataPermutationLoop1
+	call startParameters
+	
+dataPermutationLoop2:
+	mov	edx, 0								
+	mov al, byte ptr[dataStartPermutation2+esi*4]
+	div arrayKeySize
+	cmp edx,0
+	jne continueDataPermutation2						
+	mov edx,8
+	cmp eax,0
+	je continueDataPermutation2					
+	dec eax
+
+continueDataPermutation2:						
+	mov al, byte ptr[ebx+eax]			
+	call loopChangeBitValue
+	cmp edi, 8
+	jne dataPermutationLoop2
+	movd edi, mm3							
+	mov byte ptr[rightSide+edi], al		
+	call ediSet
+	cmp esi, 32
+	jne dataPermutationLoop2
+	
+	call siteration
+DaneDoXorLoop1:
+	mov al, byte ptr [finalSubKey16+edi]
+	call subXorFunction
+	cmp edi,6
+	jne DaneDoXorLoop1
+	call cditeration
+
+	call siteration
+DaneDoXorLoop2:
+	mov al, byte ptr [finalSubKey15+edi]
+	call subXorFunction
+	cmp edi,6
+	jne DaneDoXorLoop2
+	call cditeration
+
+	call siteration
+DaneDoXorLoop3:
+	mov al, byte ptr [finalSubKey14+edi]
+	call subXorFunction
+	cmp edi,6
+	jne DaneDoXorLoop3
+	call cditeration
+
+	call siteration
+DaneDoXorLoop4:
+	mov al, byte ptr [finalSubKey13+edi]
+	call subXorFunction
+	cmp edi,6
+	jne DaneDoXorLoop4
+	call cditeration
+
+	call siteration
+DaneDoXorLoop5:
+	mov al, byte ptr [finalSubKey12+edi]
+	call subXorFunction
+	cmp edi,6
+	jne DaneDoXorLoop5
+	call cditeration
+
+	call siteration
+DaneDoXorLoop6:
+	mov al, byte ptr [finalSubKey11+edi]
+	call subXorFunction
+	cmp edi,6
+	jne DaneDoXorLoop6
+	call cditeration
+
+	call siteration
+DaneDoXorLoop7:
+	mov al, byte ptr [finalSubKey10+edi]
+	call subXorFunction
+	cmp edi,6
+	jne DaneDoXorLoop7
+	call cditeration
+
+	call siteration
+DaneDoXorLoop8:
+	mov al, byte ptr [finalSubKey9+edi]
+	call subXorFunction
+	cmp edi,6
+	jne DaneDoXorLoop8
+	call cditeration
+
+	call siteration
+DaneDoXorLoop9:
+	mov al, byte ptr [finalSubKey8+edi]
+	call subXorFunction
+	cmp edi,6
+	jne DaneDoXorLoop9
+	call cditeration
+
+	call siteration
+DaneDoXorLoop10:
+	mov al, byte ptr [finalSubKey7+edi]
+	call subXorFunction
+	cmp edi,6
+	jne DaneDoXorLoop10
+	call cditeration
+
+	call siteration
+DaneDoXorLoop11:
+	mov al, byte ptr [finalSubKey6+edi]
+	call subXorFunction
+	cmp edi,6
+	jne DaneDoXorLoop11
+	call cditeration
+
+	call siteration
+DaneDoXorLoop12:
+	mov al, byte ptr [finalSubKey5+edi]
+	call subXorFunction
+	cmp edi,6
+	jne DaneDoXorLoop12
+	call cditeration
+
+	call siteration
+DaneDoXorLoop13:
+	mov al, byte ptr [finalSubKey4+edi]
+	call subXorFunction
+	cmp edi,6
+	jne DaneDoXorLoop13
+	call cditeration
+
+	call siteration
+DaneDoXorLoop14:
+	mov al, byte ptr [finalSubKey3+edi]
+	call subXorFunction
+	cmp edi,6
+	jne DaneDoXorLoop14
+	call cditeration
+
+	call siteration
+DaneDoXorLoop15:
+	mov al, byte ptr [finalSubKey2+edi]
+	call subXorFunction
+	cmp edi,6
+	jne DaneDoXorLoop15
+	call cditeration
+
+	call siteration
+DaneDoXorLoop16:
+	mov al, byte ptr [finalSubKey1+edi]
+	call subXorFunction
+	cmp edi,6
+	jne DaneDoXorLoop16
+	call cditeration
+noweDane1:
+	mov ebx, encrypt
+	mov cl, byte ptr [rightSide+edi]
+	mov byte ptr [newData+edi], cl
+	inc edi
+	cmp edi,4
+	jne noweDane1
+noweDane2:
+	mov ebx, encrypt
+	mov cl, byte ptr [leftSide+edi-4]
+	mov byte ptr [newData+edi], cl
+	inc edi
+	cmp edi,8
+	jne noweDane2
+	call startParameters
+
+finalP1:
+	mov	edx, 0								; przypisanie 0, w miejsce gdzie bedzie zapisana wartoœæ reszty z dzielenia						
+	mov al, byte ptr[finalDataPermutation1+esi] ; pobranie wartoœci który bajt
+	div arrayKeySize			
+	cmp edx,0
+	jne continueFinalP1
+	mov edx,8
+	cmp eax,0
+	je continueFinalP1
+	dec eax
+
+continueFinalP1:			
+	mov al, byte ptr[newData+eax]				
+	call loopChangeBitValue
+	cmp edi, 8
+	jne finalP1
+
+	movd edi, mm3							; edi = mm3
+	mov byte ptr[finalData+edi], al			; zapisanie do tablicy newKey wartoœci z eax
+	call ediSet
+	cmp esi, 32
+	jne finalP1
+
+	call startParameters
+
+finalP2:
+	mov	edx, 0								; przypisanie 0, w miejsce gdzie bedzie zapisana wartoœæ reszty z dzielenia						
+	mov al, byte ptr[finalDataPermutation2+esi] ; pobranie wartoœci który bajt
+	div arrayKeySize
+	cmp edx,0
+	jne continueFinalP2
+	mov edx,8
+	cmp eax,0
+	je continueFinalP2
+	dec eax
+
+continueFinalP2:
+	mov al, byte ptr[newData+eax]				; pobranie bajtu klucza z danej pozycji
+	call loopChangeBitValue
+	cmp edi, 8
+	jne finalP2
+
+	movd edi, mm3							; edi = mm3
+	mov byte ptr[finalData+edi+4], al			; zapisanie do tablicy newKey wartoœci z eax
+	call ediSet
+	cmp esi, 32
+	jne finalP2
+	call startParameters
+
+wpisanieDanych:
+	mov ebx, encrypt
+	mov cl, byte ptr [finalData+edi]
+	mov byte ptr [ebx+edi], cl
+	inc edi
+	cmp edi,8
+	jne wpisanieDanych
+	emms
+	ret
+
+Deszyfruj endp
 end 
