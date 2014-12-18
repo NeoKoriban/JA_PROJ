@@ -16,10 +16,11 @@ using System.Threading;
 namespace Szyfrowanie_DES
 { 
     public partial class EncryptDES : Form
-    {[DllImport("AsemblerDES.dll", CallingConvention = CallingConvention.StdCall)]
-        public static extern int Szyfruj(byte []  a, byte []  b);
+    {
         [DllImport("AsemblerDES.dll", CallingConvention = CallingConvention.StdCall)]
-        public static extern int Deszyfruj(byte[] a, byte[] b);
+        public static extern void Szyfruj(byte []  a, byte []  b);
+        [DllImport("AsemblerDES.dll", CallingConvention = CallingConvention.StdCall)]
+        public static extern void Deszyfruj(byte[] a, byte[] b);
         //
         private byte[][] blocksArray;
         //
@@ -64,7 +65,7 @@ namespace Szyfrowanie_DES
             dataTableVisualisation.RowHeadersVisible = false;
             DataPrepare dataPrepare = new DataPrepare();
 
-            int lengthBlock = 16;
+            int lengthBlock = 8;
 
             dataArray = dataPrepare.readFile(fileLocation);
            
@@ -93,7 +94,28 @@ namespace Szyfrowanie_DES
         {
             selectOperationButton.Enabled = true;
         }
-
+        private int iterator = 0;
+        private void realizeThreadEncrypt()
+        {
+            int loopIteration = blocksArray.Length / 4;
+            for (int i = iterator * loopIteration; i < loopIteration + iterator * loopIteration; i++)
+            {
+                byte[] array = new byte[8];
+                Szyfruj(blocksArray[i], array);
+                blocksArray[i] = array;
+            }
+            
+        }
+        private void realizeThreadDecrypt()
+        {
+            int loopIteration = blocksArray.Length / 4;
+            for (int i = iterator * loopIteration; i < loopIteration + iterator * loopIteration; i++)
+            {
+                byte[] array = new byte[8];
+                Deszyfruj(blocksArray[i], array);
+                blocksArray[i] = array;
+            }
+        }
         private void selectOperationButton_Click(object sender, EventArgs e)
         {
             DataPrepare dataPrepare = new DataPrepare();
@@ -101,26 +123,51 @@ namespace Szyfrowanie_DES
             if (operationsComboBox.SelectedItem.Equals("Odszyfruj"))
             {
                 statusLabel.Text = "Dane zostały odszyfrowane";
-                
-                for (int i = 0; i < blocksArray.Length / 16; i++)
-                {
-                    int cos = Deszyfruj(blocksArray[i], blocksArray[i]);
-                }
+
+                iterator = 0;                 
+                Thread thread1 = new Thread(new ThreadStart(realizeThreadDecrypt));
+                thread1.Start();
+                thread1.Join();
+                iterator = 1;
+                Thread thread2 = new Thread(new ThreadStart(realizeThreadDecrypt));
+                thread2.Start();
+                thread2.Join();
+                iterator = 2;
+                Thread thread3 = new Thread(new ThreadStart(realizeThreadDecrypt));
+                thread3.Start();
+                thread3.Join();
+                iterator = 3;
+                Thread thread4 = new Thread(new ThreadStart(realizeThreadDecrypt));
+                thread4.Start();
+                thread4.Join();
+
                 dataArray = dataPrepare.integrateBlocks(blocksArray);
                 dataPrepare.writeFile(fileLocation, dataArray);
             }
             else
             {
-                statusLabel.Text = "Dane zostały odszyfrowane";
+                statusLabel.Text = "Dane zostały zaszyfrowane";
 
-                for(int i = 0; i < blocksArray.Length/16; i++) 
-                {
-                    int cos = Szyfruj(blocksArray[i],blocksArray[i]);
-                }
+                iterator = 0;
+                Thread thread1 = new Thread(new ThreadStart(realizeThreadEncrypt));
+                thread1.Start();
+                thread1.Join();
+                iterator = 1;
+                Thread thread2 = new Thread(new ThreadStart(realizeThreadEncrypt));
+                thread2.Start();
+                thread2.Join();
+                iterator = 2;
+                Thread thread3 = new Thread(new ThreadStart(realizeThreadEncrypt));
+                thread3.Start();
+                thread3.Join();
+                iterator = 3;
+                Thread thread4 = new Thread(new ThreadStart(realizeThreadEncrypt));
+                thread4.Start();
+                thread4.Join();
+               
                 dataArray = dataPrepare.integrateBlocks(blocksArray);
                 dataPrepare.writeFile(fileLocation, dataArray);
-              
-
+                
             }
         }
     }

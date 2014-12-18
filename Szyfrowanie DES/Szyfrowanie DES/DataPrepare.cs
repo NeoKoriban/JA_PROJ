@@ -68,7 +68,7 @@ namespace Szyfrowanie_DES
             int arrayCounter = 0;
          
             int additionContent = blocksArray[blocksArray.Length - 1][blocksArray[blocksArray.Length-1].Length-1];
-            int restBlockByte = 16 - additionContent - 1;
+            int restBlockByte = 8 - additionContent - 1;
             
             bool doing = true;
             for (int i = 0; i < additionContent; i++)

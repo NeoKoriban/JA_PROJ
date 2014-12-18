@@ -1504,9 +1504,8 @@ continuePerm16:
 	emms
 	ret
 PrzygotowanieKlucza endp 
-
 ;------------------------------------------------------------------------------------------------------------
-;
+; Dodawanie odpowiedniej wartoœci w celu wybrania na póŸniejszym etapie odpowiedniego indeksu tablicy oraz odpowiedniej tablicy.
 ;------------------------------------------------------------------------------------------------------------
 AddValue proc
 	cmp esi, 0
@@ -1588,7 +1587,9 @@ koniec:
 	ret
 
 AddValue endp
-	
+;------------------------------------------------------------------------------------------------------------------------------------
+; Wprowadzenie odpowiedniej wartoœci do prawej strony cz1
+;------------------------------------------------------------------------------------------------------------------------------------
 InsertValueRightSide1 proc
 	shl al, 4
 	movd edi,mm5
@@ -1601,7 +1602,9 @@ InsertValueRightSide1 proc
 	
 	ret
 InsertValueRightSide1 endp
-
+;------------------------------------------------------------------------------------------------------------------------------------
+; Wprowadzenie odpowiedniej wartoœci do prawej strony cz2
+;------------------------------------------------------------------------------------------------------------------------------------
 InsertValueRightSide2 proc
 	movd mm0, eax
 	movd edi, mm5
@@ -1617,7 +1620,9 @@ InsertValueRightSide2 proc
 	mov ebx,0
 	ret
 InsertValueRightSide2 endp
-
+;------------------------------------------------------------------------------------------------------------------------------------
+; Pocz¹tek iteracji.
+;------------------------------------------------------------------------------------------------------------------------------------
 siteration proc
 	call startParameters
 	
@@ -1678,7 +1683,9 @@ continueEPermutation2:
 	call startParameters
 	ret
 siteration endp
-
+;------------------------------------------------------------------------------------------------------------------------------------
+; Koniec iteracji.
+;------------------------------------------------------------------------------------------------------------------------------------
 cditeration proc
 	call startParameters
 	mov edx, 0
@@ -2039,7 +2046,7 @@ subXorFunction proc
 	ret
 subXorFunction endp
 ;------------------------------------------------------------------------------------------------------------
-;
+; Funkcja szyfrowania g³ówna
 ;------------------------------------------------------------------------------------------------------------
 Szyfruj proc data:dword, encrypt:dword
 	
@@ -2295,7 +2302,9 @@ wpisanieDanych:
 	ret
 
 Szyfruj endp
-
+;------------------------------------------------------------------------------------------------------------
+; Funkcja deszyfrowania g³ówna
+;------------------------------------------------------------------------------------------------------------
 Deszyfruj proc data:dword, encrypt:dword
 	
 	call PrzygotowanieKlucza
